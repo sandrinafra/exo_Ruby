@@ -41,12 +41,15 @@ class Body_closed < StandardError
       @i = i + 1
     end
     File.open(@title + '.html', 'w')do |file|
-      array.each { |line| file << line }
+      array.each do |line|
+        file << line
+      end
+       file << "  <p>#{str}</p>\n" << "</body>"
     end
   end
 
   def explain
-    puts "> ln :#{@i} </body> : text has been inserted and tag moved at the end of it."
+    puts "> ln :25 </body> : text has been inserted and tag moved at the end of it."
   end
 
 end
@@ -85,12 +88,12 @@ class Html
         file.seek 0
         msg = "Body has already been closed in #{@page_name}.html"
         raise Body_closed, @page_name  if %r{<\/body>} =~ file.read
+        file << "  <p>#{str}</p>\n"
       rescue Body_closed => error
         error.show_state
         error.correct(str)
         error.explain
       end
-      file << "  <p>#{str}</p>\n"
     end
   end
 
@@ -111,5 +114,4 @@ if $PROGRAM_NAME == __FILE__
   10.times { |x| a.dump("titi_number#{x}") }
   a.finish
   a.dump("hello titi")
-  a.finish
 end
